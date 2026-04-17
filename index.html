@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lakshmidhar Kotipalli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0a0a;
+  --surface: #111;
+  --border: #1e1e1e;
+  --accent: #e8ff70;
+  --text: #e0e0e0;
+  --muted: #555;
+  --dim: #2a2a2a;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Deck ── */
+.deck { position: relative; width: 100%; height: 100%; }
+
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: flex-start;
+  padding: 72px 96px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.slide.active { opacity: 1; pointer-events: all; }
+
+/* ── Progress ── */
+#progress {
+  position: fixed; top: 0; left: 0;
+  height: 1px; background: var(--accent);
+  transition: width 0.5s ease;
+  z-index: 99;
+}
+
+/* ── Counter ── */
+#counter {
+  position: fixed; bottom: 32px; right: 48px;
+  font-size: 11px; color: var(--muted);
+  letter-spacing: 0.12em;
+  font-feature-settings: 'tnum';
+}
+
+/* ── Dots ── */
+#dots {
+  position: fixed; bottom: 36px; left: 50%;
+  transform: translateX(-50%);
+  display: flex; gap: 8px;
+}
+.dot {
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--dim); cursor: pointer;
+  transition: all 0.3s ease;
+}
+.dot.on { background: var(--accent); width: 20px; border-radius: 2px; }
+
+/* ── Shared ── */
+.label {
+  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 20px;
+  opacity: 0; transform: translateY(8px);
+  animation: up 0.5s 0.05s forwards;
+}
+h1, h2 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  opacity: 0; transform: translateY(12px);
+  animation: up 0.5s 0.12s forwards;
+}
+h1 { font-size: clamp(44px, 5.5vw, 74px); line-height: 1.05; color: #fff; }
+h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
+
+.sub {
+  font-size: 13px; color: var(--muted); letter-spacing: 0.06em;
+  margin-top: 6px;
+  opacity: 0; transform: translateY(8px);
+  animation: up 0.5s 0.2s forwards;
+}
+
+.rule {
+  width: 32px; height: 1px; background: var(--accent);
+  margin: 28px 0;
+  opacity: 0; animation: up 0.5s 0.18s forwards;
+}
+
+@keyframes up {
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes in {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── Hero ── */
+.hero-tagline {
+  max-width: 560px; font-size: 15px; line-height: 1.8;
+  color: #666; margin-bottom: 44px;
+  opacity: 0; animation: up 0.5s 0.28s forwards;
+}
+.chips {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  opacity: 0; animation: up 0.5s 0.36s forwards;
+}
+.chip {
+  padding: 7px 16px; border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 12px; color: #888;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+.chip:hover { border-color: #444; color: var(--text); }
+
+/* ── Bullets ── */
+.bullets { margin-top: 4px; width: 100%; max-width: 800px; }
+.b {
+  display: flex; gap: 20px; align-items: baseline;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+  opacity: 0; animation: in 0.4s forwards;
+  font-size: 14px; line-height: 1.65; color: #888;
+}
+.b:first-child { border-top: 1px solid var(--border); }
+.b-num { font-size: 10px; color: var(--dim); width: 18px; flex-shrink: 0; padding-top: 2px; }
+.b strong { color: var(--text); font-weight: 500; }
+.b .hi {
+  color: var(--accent); font-size: 11px;
+  background: rgba(232,255,112,0.08);
+  padding: 1px 6px; border-radius: 3px;
+  font-feature-settings: 'tnum';
+}
+
+.b:nth-child(1) { animation-delay: 0.08s; }
+.b:nth-child(2) { animation-delay: 0.14s; }
+.b:nth-child(3) { animation-delay: 0.20s; }
+.b:nth-child(4) { animation-delay: 0.26s; }
+.b:nth-child(5) { animation-delay: 0.32s; }
+.b:nth-child(6) { animation-delay: 0.38s; }
+.b:nth-child(7) { animation-delay: 0.44s; }
+
+/* ── Projects grid ── */
+.pg {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; width: 100%; max-width: 820px;
+  background: var(--border); border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden; margin-top: 4px;
+}
+.pc {
+  background: var(--bg); padding: 28px 32px;
+  opacity: 0; animation: up 0.4s forwards;
+  transition: background 0.2s;
+}
+.pc:hover { background: var(--surface); }
+.pc:nth-child(1) { animation-delay: 0.08s; }
+.pc:nth-child(2) { animation-delay: 0.16s; }
+.pc:nth-child(3) { animation-delay: 0.24s; }
+.pc:nth-child(4) { animation-delay: 0.32s; }
+.pc-num { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 10px; }
+.pc-name { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 8px; }
+.pc-desc { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+.gh {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; color: var(--muted); letter-spacing: 0.06em;
+  text-decoration: none; padding: 4px 0;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+.gh:hover { color: var(--accent); border-color: var(--accent); }
+.gh svg { flex-shrink: 0; }
+
+/* ── Project detail ── */
+.pd { width: 100%; max-width: 860px; }
+.pd-head {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 32px;
+  opacity: 0; animation: up 0.5s 0.05s forwards;
+}
+.pd-links { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; margin-top: 4px; }
+.pd-body {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+}
+.pd-cell {
+  background: var(--bg); padding: 24px 28px;
+  opacity: 0; animation: up 0.4s forwards;
+}
+.pd-cell:hover { background: var(--surface); transition: background 0.2s; }
+.pd-cell:nth-child(1) { animation-delay: 0.12s; }
+.pd-cell:nth-child(2) { animation-delay: 0.20s; }
+.pd-cell:nth-child(3) { animation-delay: 0.28s; }
+.pd-cell:nth-child(4) { animation-delay: 0.36s; }
+.cell-label {
+  font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 14px;
+}
+.pd-cell p { font-size: 13px; line-height: 1.75; color: #666; }
+.pd-cell p strong { color: var(--text); font-weight: 500; }
+.steps { display: flex; flex-direction: column; gap: 8px; }
+.step { display: flex; gap: 12px; align-items: baseline; font-size: 12px; color: #666; }
+.sn {
+  font-size: 9px; color: var(--muted);
+  border: 1px solid var(--dim);
+  width: 18px; height: 18px; border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag {
+  font-size: 10px; color: #555;
+  border: 1px solid var(--dim);
+  padding: 3px 9px; border-radius: 3px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Future ── */
+.fg {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 24px; width: 100%; max-width: 820px;
+}
+.fc {
+  padding: 36px; border: 1px solid var(--border); border-radius: 8px;
+  opacity: 0; animation: up 0.5s forwards;
+}
+.fc:nth-child(1) { animation-delay: 0.12s; }
+.fc:nth-child(2) { animation-delay: 0.24s; }
+.fc-title { font-size: 17px; font-weight: 500; color: #fff; margin-bottom: 16px; }
+.fc p { font-size: 13px; line-height: 1.8; color: #666; }
+.fc p strong { color: var(--text); font-weight: 500; }
+.fc-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-bottom: 20px; }
+
+/* ── Badge ── */
+.badge {
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 3px;
+  border: 1px solid var(--border); color: var(--muted);
+}
+.badge.live { border-color: rgba(232,255,112,0.25); color: rgba(232,255,112,0.6); }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div id="counter"></div>
+<div id="dots"></div>
+
+<div class="deck">
+
+<!-- 1. Hero -->
+<div class="slide active">
+  <div class="label">AI Engineer · Tampa, USA · 2026</div>
+  <h1>Lakshmidhar<br>Kotipalli</h1>
+  <div class="rule"></div>
+  <p class="hero-tagline">Specialized in digitizing supply chain documents and designing systems that convert unstructured information into reliable operational data.</p>
+  <div class="chips">
+    <a class="chip" href="mailto:lakshmidhar.k11@gmail.com">lakshmidhar.k11@gmail.com</a>
+    <a class="chip" href="tel:+16562150975">+1 (656) 215-0975</a>
+    <a class="chip" href="https://linkedin.com/in/lakshmidhar-kotipalli" target="_blank">LinkedIn</a>
+  </div>
+</div>
+
+<!-- 2. PhFlow -->
+<div class="slide">
+  <div class="label" style="display:flex;align-items:center;gap:10px">
+    <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulse 2s infinite"></span>
+    Current · PhFlow AI · Tampa, USA · July 2025 – Present
+  </div>
+  <h2>PhFlow AI</h2>
+  <div class="sub">AI Engineer</div>
+  <div class="rule"></div>
+  <div class="bullets">
+    <div class="b"><span class="b-num">01</span><span>Built a <strong>vision-language model pipeline</strong> to digitize shipment documents from <span class="hi">15+ vendor layouts</span>, stabilizing extraction where coordinate-based OCR rules fail.</span></div>
+    <div class="b"><span class="b-num">02</span><span>Implemented <strong>schema-constrained prompts</strong> to reduce hallucinated values during extraction, preventing incorrect data from entering downstream records.</span></div>
+    <div class="b"><span class="b-num">03</span><span>Generated <strong>synthetic shipment documents</strong> with image augmentation to expand training data and improve robustness across layout variations.</span></div>
+    <div class="b"><span class="b-num">04</span><span><strong>Private GPU deployment</strong> — model inference on sensitive documents runs entirely within internal systems, zero external data exposure.</span></div>
+    <div class="b"><span class="b-num">05</span><span><strong>Model quantization</strong> + inference tuning reduced processing time from <span class="hi">~16s</span> to <span class="hi">&lt;10s</span> per document.</span></div>
+    <div class="b"><span class="b-num">06</span><span>Integrated an <strong>AI assistant RAG system</strong> into warehouse workflows for real-time inventory and shipment queries from internal documents.</span></div>
+    <div class="b"><span class="b-num">07</span><span>Proposed a <strong>digital twin simulation framework</strong> for warehouse operations to identify bottlenecks before real-world execution.</span></div>
+  </div>
+</div>
+
+<!-- 3. GanaIT -->
+<div class="slide">
+  <div class="label">Previous · GanaIT · Tampa, USA · May 2024 – June 2025</div>
+  <h2>GanaIT</h2>
+  <div class="sub">AI Engineer</div>
+  <div class="rule"></div>
+  <div class="bullets">
+    <div class="b"><span class="b-num">01</span><span>Built a <strong>RAG Q&A system</strong> routing queries between internal documents and live web search — answers without leaving the platform.</span></div>
+    <div class="b"><span class="b-num">02</span><span>Developed a <strong>hybrid routing layer</strong> — regex pattern detection for structured queries plus a small LLM for semantic classification, achieving <span class="hi">~95% accuracy</span>.</span></div>
+    <div class="b"><span class="b-num">03</span><span>Engineered retrieval with <strong>Qdrant + BGE embeddings</strong>, cosine similarity filtering, and adaptive top-k expansion for reliable context generation.</span></div>
+    <div class="b"><span class="b-num">04</span><span>Indexed <span class="hi">9 volumes · ~12,000 pages</span> of private documents into vector embeddings for large-scale semantic search.</span></div>
+    <div class="b"><span class="b-num">05</span><span>Deployed locally with <strong>llama.cpp + GGUF models</strong> — no data transmitted to external APIs or cloud-hosted language models.</span></div>
+  </div>
+</div>
+
+<!-- 4. Projects Overview -->
+<div class="slide">
+  <div class="label">Side Projects</div>
+  <h2>Building in the Open</h2>
+  <div class="rule"></div>
+  <div class="pg">
+    <div class="pc">
+      <div class="pc-num">01 · PUBLIC</div>
+      <div class="pc-name">DocMe</div>
+      <div class="pc-desc">Privacy-first macOS activity tracker. Python agent + local LLM generates daily summaries. Zero cloud.</div>
+      <a class="gh" href="https://github.com/LakshmidharKotipalli/DocMe" target="_blank">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.74-1.33-1.74-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        LakshmidharKotipalli/DocMe
+      </a>
+    </div>
+    <div class="pc">
+      <div class="pc-num">02 · PUBLIC</div>
+      <div class="pc-name">GeoCanvas</div>
+      <div class="pc-desc">Click any point on Earth, get a Stable Diffusion XL artwork. Location-aware prompt generation via Nominatim.</div>
+      <a class="gh" href="https://github.com/LakshmidharKotipalli/geo-canvas" target="_blank">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.74-1.33-1.74-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        LakshmidharKotipalli/geo-canvas
+      </a>
+    </div>
+    <div class="pc">
+      <div class="pc-num">03 · PRIVATE</div>
+      <div class="pc-name">Recruiter Agent</div>
+      <div class="pc-desc">Agentic candidate sourcing with Claude. 7-layer pipeline — JD understanding, multi-source fetch, scored shortlists.</div>
+      <span class="gh">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        LakshmidharKotipalli/Recruiter
+      </span>
+    </div>
+    <div class="pc">
+      <div class="pc-num">04 · PRIVATE</div>
+      <div class="pc-name">Job Application Agent</div>
+      <div class="pc-desc">Fully local pipeline — scrapes 6 job boards, scores fit via Ollama LLM, writes cover letters, applies.</div>
+      <span class="gh">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        LakshmidharKotipalli/job-agent
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- 5. DocMe -->
+<div class="slide">
+  <div class="pd">
+    <div class="pd-head">
+      <div>
+        <div class="label" style="margin-bottom:14px">Project 01 · Public</div>
+        <h2>DocMe</h2>
+        <div class="sub">Privacy-First macOS Activity Tracker with AI Daily Summaries</div>
+      </div>
+      <div class="pd-links">
+        <a class="gh" href="https://github.com/LakshmidharKotipalli/DocMe" target="_blank">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.74-1.33-1.74-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+        <span class="badge">Released as DMG</span>
+      </div>
+    </div>
+    <div class="pd-body">
+      <div class="pd-cell">
+        <div class="cell-label">Problem</div>
+        <p>Knowledge workers have no coherent record of their workday. Existing tools (RescueTime, Toggl) send data to cloud servers — a serious privacy risk for anyone handling proprietary code or sensitive documents.</p>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">Solution</div>
+        <p>Native macOS <strong>Electron app</strong>. Python agent polls every <strong>1.5s</strong> — active windows, URLs via browser extension, file changes. Local SQLite. <strong>llama.cpp + gemma</strong> generates natural-language daily summaries on demand. Zero config.</p>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">Key Design Decisions</div>
+        <div class="steps">
+          <div class="step"><span class="sn">→</span> Zero cloud — everything stays on disk</div>
+          <div class="step"><span class="sn">→</span> Bundled Python runtime — no install required</div>
+          <div class="step"><span class="sn">→</span> Chrome/Firefox extension for URL capture</div>
+          <div class="step"><span class="sn">→</span> Quick Notes capture current app context</div>
+          <div class="step"><span class="sn">→</span> SQLite default — no database server needed</div>
+        </div>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">Stack</div>
+        <div class="tags">
+          <span class="tag">Electron</span><span class="tag">React + Vite</span><span class="tag">TypeScript</span>
+          <span class="tag">FastAPI</span><span class="tag">Python 3.12</span><span class="tag">SQLite</span>
+          <span class="tag">llama.cpp</span><span class="tag">gemma-3-1b</span><span class="tag">PyObjC</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. GeoCanvas -->
+<div class="slide">
+  <div class="pd">
+    <div class="pd-head">
+      <div>
+        <div class="label" style="margin-bottom:14px">Project 02 · Public</div>
+        <h2>GeoCanvas</h2>
+        <div class="sub">Location-Aware AI Image Generation</div>
+      </div>
+      <div class="pd-links">
+        <a class="gh" href="https://github.com/LakshmidharKotipalli/geo-canvas" target="_blank">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.74-1.33-1.74-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+    </div>
+    <div class="pd-body">
+      <div class="pd-cell">
+        <div class="cell-label">Problem</div>
+        <p>Standard text-to-image tools have no sense of place. Writing a location-accurate prompt requires knowing the exact place name — the prompt is the hardest part, not the generation itself.</p>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">Solution</div>
+        <p>Click any point on Earth on an interactive <strong>Leaflet map</strong> → Nominatim reverse geocodes coordinates → auto-fills an editable prompt → <strong>Stable Diffusion XL</strong> generates a <strong>1024×1024</strong> image. 4 presets included.</p>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">Pipeline</div>
+        <div class="steps">
+          <div class="step"><span class="sn">1</span> Map click → lat/lng state</div>
+          <div class="step"><span class="sn">2</span> Nominatim reverse geocode → place name</div>
+          <div class="step"><span class="sn">3</span> Auto-filled, editable prompt</div>
+          <div class="step"><span class="sn">4</span> POST /api/generate → SDXL pipeline</div>
+          <div class="step"><span class="sn">5</span> PNG returned as base64 → display + download</div>
+        </div>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">Stack</div>
+        <div class="tags">
+          <span class="tag">Next.js 15</span><span class="tag">React 19</span><span class="tag">TypeScript</span>
+          <span class="tag">Tailwind</span><span class="tag">Leaflet</span><span class="tag">FastAPI</span>
+          <span class="tag">SDXL</span><span class="tag">MiDaS DPT</span><span class="tag">OpenCV Canny</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. Recruiter Agent -->
+<div class="slide">
+  <div class="pd">
+    <div class="pd-head">
+      <div>
+        <div class="label" style="margin-bottom:14px">Project 03 · Private</div>
+        <h2>Recruiter Agent</h2>
+        <div class="sub">AI-Powered Candidate Sourcing & Resume Matching</div>
+      </div>
+      <div class="pd-links">
+        <span class="badge">Private Repo</span>
+      </div>
+    </div>
+    <div class="pd-body">
+      <div class="pd-cell">
+        <div class="cell-label">Problem</div>
+        <p>Manual recruiting doesn't scale. ATS systems do keyword matching — no understanding of the JD, no reasoning about seniority proximity, no explanation for low scores.</p>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">7-Layer Agentic Pipeline</div>
+        <div class="steps">
+          <div class="step"><span class="sn">1</span> Understand JD — extract skills, seniority, location</div>
+          <div class="step"><span class="sn">2</span> Generate Boolean queries per source</div>
+          <div class="step"><span class="sn">3</span> Fetch: Google CSE · Naukri · People Data Labs</div>
+          <div class="step"><span class="sn">4</span> Deduplicate via P1–P4 identity resolution</div>
+          <div class="step"><span class="sn">5</span> Score & rank with weighted formula</div>
+          <div class="step"><span class="sn">6</span> Generate natural-language reasoning per candidate</div>
+          <div class="step"><span class="sn">7</span> HITL checkpoints — recruiter stays in control</div>
+        </div>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">Scoring Formula</div>
+        <div class="steps">
+          <div class="step"><span class="sn" style="width:24px;font-size:8px">50%</span> Must-have skills matched</div>
+          <div class="step"><span class="sn" style="width:24px;font-size:8px">25%</span> Nice-to-have skills</div>
+          <div class="step"><span class="sn" style="width:24px;font-size:8px">15%</span> Seniority proximity</div>
+          <div class="step"><span class="sn" style="width:24px;font-size:8px">10%</span> Location match</div>
+        </div>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">Stack</div>
+        <div class="tags">
+          <span class="tag">FastAPI</span><span class="tag">Anthropic Claude</span><span class="tag">tool_use ReAct</span>
+          <span class="tag">SSE Streaming</span><span class="tag">Pydantic v2</span><span class="tag">Google CSE</span>
+          <span class="tag">People Data Labs</span><span class="tag">Vanilla SPA</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. Job Application Agent -->
+<div class="slide">
+  <div class="pd">
+    <div class="pd-head">
+      <div>
+        <div class="label" style="margin-bottom:14px">Project 04 · Private</div>
+        <h2>Job Application Agent</h2>
+        <div class="sub">Autonomous, Privacy-First Job Application Pipeline</div>
+      </div>
+      <div class="pd-links">
+        <span class="badge">Private Repo</span>
+      </div>
+    </div>
+    <div class="pd-body">
+      <div class="pd-cell">
+        <div class="cell-label">Problem</div>
+        <p>Job searching at scale is exhausting — checking 5–6 boards daily, subjective fit assessment, writing generic cover letters. Quality degrades with fatigue. Most applications go unread.</p>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">Pipeline (runs locally, while you sleep)</div>
+        <div class="steps">
+          <div class="step"><span class="sn">1</span> Scrape 6 platforms with stealth Playwright</div>
+          <div class="step"><span class="sn">2</span> Deduplicate — 2-phase content hash</div>
+          <div class="step"><span class="sn">3</span> Score vs resume — local Ollama LLM (0–100)</div>
+          <div class="step"><span class="sn">4</span> Generate tailored cover letter if score ≥ 65</div>
+          <div class="step"><span class="sn">5</span> Apply via Playwright (--live mode only)</div>
+          <div class="step"><span class="sn">6</span> Track all jobs + status in SQLite</div>
+        </div>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">Platforms Scraped</div>
+        <div class="tags">
+          <span class="tag">Indeed</span><span class="tag">Glassdoor</span><span class="tag">Built In</span>
+          <span class="tag">Wellfound</span><span class="tag">SimplyHired</span><span class="tag">Jobright</span>
+        </div>
+      </div>
+      <div class="pd-cell">
+        <div class="cell-label">Stack</div>
+        <div class="tags">
+          <span class="tag">Playwright</span><span class="tag">Ollama</span><span class="tag">llama3 / mistral</span>
+          <span class="tag">SQLite</span><span class="tag">Flask</span><span class="tag">pypdf</span><span class="tag">Python</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 9. Future -->
+<div class="slide">
+  <div class="label">What's Next</div>
+  <h2>Future Interests</h2>
+  <div class="rule"></div>
+  <div class="fg">
+    <div class="fc">
+      <div class="fc-dot"></div>
+      <div class="fc-title">Digital Twin for Warehouse Operations</div>
+      <p>Simulate <strong>shipment intake, inventory movement, and automation workflows</strong> before real-world execution. Identify bottlenecks, test routing strategies, and evaluate automation ROI in a virtual environment — safely, at zero operational cost.<br><br>Grounded in my current work at PhFlow AI, where I've already proposed this framework as the next evolution of the AI pipeline.</p>
+    </div>
+    <div class="fc">
+      <div class="fc-dot" style="background:#fff;opacity:0.3"></div>
+      <div class="fc-title">Open Source AI Tooling</div>
+      <p>Build in public. Contribute to the <strong>AI/ML and local-first tooling</strong> ecosystem — sharing privacy-first, on-device AI patterns developed across DocMe, Job Agent, and GanaIT.<br><br>Interested in contributing to <strong>inference optimization, RAG frameworks,</strong> and developer tools that make powerful AI accessible without cloud dependency.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<style>
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+</style>
+
+<script>
+const slides = [...document.querySelectorAll('.slide')];
+const total = slides.length;
+let cur = 0;
+
+const progress = document.getElementById('progress');
+const counter = document.getElementById('counter');
+const dotsEl = document.getElementById('dots');
+
+// Build dots
+for (let i = 0; i < total; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' on' : '');
+  d.onclick = () => go(i);
+  dotsEl.appendChild(d);
+}
+
+function ui() {
+  progress.style.width = ((cur + 1) / total * 100) + '%';
+  counter.textContent = String(cur + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i === cur));
+}
+
+function go(n) {
+  if (n < 0 || n >= total || n === cur) return;
+  slides[cur].classList.remove('active');
+  cur = n;
+
+  // Re-trigger CSS animations
+  const s = slides[cur];
+  s.querySelectorAll('.label, h1, h2, .sub, .rule, .hero-tagline, .chips, .bullets, .b, .pg, .pc, .pd-head, .pd-cell, .fg, .fc').forEach(el => {
+    el.style.animation = 'none';
+    el.offsetHeight;
+    el.style.animation = '';
+  });
+
+  s.classList.add('active');
+  ui();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') go(cur + 1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(cur - 1);
+});
+
+// Click left/right halves
+document.addEventListener('click', e => {
+  if (e.target.closest('a, .dot')) return;
+  e.clientX < window.innerWidth / 2 ? go(cur - 1) : go(cur + 1);
+});
+
+// Touch swipe
+let tx = 0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  if (Math.abs(dx) > 40) dx < 0 ? go(cur + 1) : go(cur - 1);
+});
+
+ui();
+</script>
+</body>
+</html>
