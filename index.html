@@ -188,7 +188,7 @@ h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
 .pd { width: 100%; max-width: 860px; }
 .pd-head {
   display: flex; align-items: flex-start; justify-content: space-between;
-  margin-bottom: 32px;
+  margin-bottom: 22px;
   opacity: 0; animation: up 0.5s 0.05s forwards;
 }
 .pd-links { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; margin-top: 4px; }
@@ -198,7 +198,7 @@ h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
   border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
 }
 .pd-cell {
-  background: var(--bg); padding: 24px 28px;
+  background: var(--bg); padding: 20px 26px;
   opacity: 0; animation: up 0.4s forwards;
 }
 .pd-cell:hover { background: var(--surface); transition: background 0.2s; }
@@ -227,6 +227,41 @@ h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
   border: 1px solid var(--dim);
   padding: 3px 9px; border-radius: 3px;
   letter-spacing: 0.04em;
+}
+
+/* ── Architecture flow ── */
+.pd-arch {
+  margin-top: 14px;
+  padding: 16px 24px 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  opacity: 0; animation: up 0.4s 0.44s forwards;
+}
+.arch-flow {
+  display: flex; align-items: center; justify-content: flex-start;
+  flex-wrap: wrap; gap: 6px 8px;
+}
+.arch-node {
+  padding: 6px 11px; border: 1px solid var(--dim);
+  border-radius: 4px; font-size: 10.5px;
+  color: #aaa; background: var(--surface);
+  white-space: nowrap; letter-spacing: 0.02em;
+}
+.arch-node.hi {
+  border-color: rgba(232,255,112,0.3);
+  color: var(--accent);
+  background: rgba(232,255,112,0.04);
+}
+.arch-group {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.arch-sep {
+  font-size: 11px; color: var(--muted); font-weight: 300;
+}
+.arch-branch {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; color: var(--muted);
 }
 
 /* ── Future ── */
@@ -400,6 +435,26 @@ h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
         </div>
       </div>
     </div>
+    <div class="pd-arch">
+      <div class="cell-label">Architecture</div>
+      <div class="arch-flow">
+        <div class="arch-group">
+          <span class="arch-node">Active Windows</span>
+          <span class="arch-node">Browser Ext</span>
+          <span class="arch-node">File Events</span>
+        </div>
+        <span class="arch-sep">→</span>
+        <span class="arch-node hi">Python Agent · 1.5s</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">SQLite</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">FastAPI</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node hi">llama.cpp · gemma</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">Electron UI</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -445,6 +500,22 @@ h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
           <span class="tag">Tailwind</span><span class="tag">Leaflet</span><span class="tag">FastAPI</span>
           <span class="tag">SDXL</span><span class="tag">MiDaS DPT</span><span class="tag">OpenCV Canny</span>
         </div>
+      </div>
+    </div>
+    <div class="pd-arch">
+      <div class="cell-label">Architecture</div>
+      <div class="arch-flow">
+        <span class="arch-node">Leaflet Map Click</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">Nominatim Reverse Geocode</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">Next.js UI · Editable Prompt</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">FastAPI /api/generate</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node hi">SDXL + MiDaS + Canny</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">PNG base64 · 1024²</span>
       </div>
     </div>
   </div>
@@ -498,6 +569,28 @@ h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
         </div>
       </div>
     </div>
+    <div class="pd-arch">
+      <div class="cell-label">Architecture</div>
+      <div class="arch-flow">
+        <span class="arch-node">JD Input</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node hi">Claude · tool_use ReAct</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">Boolean Queries</span>
+        <span class="arch-sep">→</span>
+        <div class="arch-group">
+          <span class="arch-node">Google CSE</span>
+          <span class="arch-node">People Data Labs</span>
+          <span class="arch-node">Naukri</span>
+        </div>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">Dedup P1–P4</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node hi">Score · Rank · Reason</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">HITL · SSE Stream</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -543,6 +636,28 @@ h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
           <span class="tag">Playwright</span><span class="tag">Ollama</span><span class="tag">llama3 / mistral</span>
           <span class="tag">SQLite</span><span class="tag">Flask</span><span class="tag">pypdf</span><span class="tag">Python</span>
         </div>
+      </div>
+    </div>
+    <div class="pd-arch">
+      <div class="cell-label">Architecture</div>
+      <div class="arch-flow">
+        <div class="arch-group">
+          <span class="arch-node">Indeed</span>
+          <span class="arch-node">Glassdoor</span>
+          <span class="arch-node">Built In · +3</span>
+        </div>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">Stealth Playwright</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">2-Phase Hash Dedup</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node hi">Ollama · Score 0–100</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">≥ 65 · Cover Letter</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">Playwright Apply</span>
+        <span class="arch-sep">→</span>
+        <span class="arch-node">SQLite Track</span>
       </div>
     </div>
   </div>
