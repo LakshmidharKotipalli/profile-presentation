@@ -3,20 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lakshmidhar Kotipalli</title>
+<title>Lakshmidhar Kotipalli — AI Engineer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0a0a0a;
-  --surface: #111;
-  --border: #1e1e1e;
-  --accent: #e8ff70;
-  --text: #e0e0e0;
-  --muted: #555;
-  --dim: #2a2a2a;
+  --bg:         #08090E;
+  --surface:    #0D101A;
+  --surface2:   #131724;
+  --border:     #1A2035;
+  --border2:    #222C44;
+  --gold:       #C8A86A;
+  --gold-dim:   rgba(200,168,106,0.12);
+  --gold-line:  rgba(200,168,106,0.28);
+  --gold-glow:  rgba(200,168,106,0.45);
+  --text:       #EDE8DF;
+  --muted:      #7A829A;
+  --dim:        #2E3854;
 }
 
 html, body {
@@ -24,126 +29,194 @@ html, body {
   overflow: hidden;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
+  font-family: 'Jost', sans-serif;
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
 }
 
+/* Dot-grid texture */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-size: 36px 36px;
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ambient glow layers */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 55% 55% at 85% 15%, rgba(200,168,106,0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 45% 45% at 10% 85%, rgba(91,130,200,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Corner accent lines */
+.corner {
+  position: fixed; width: 48px; height: 48px;
+  pointer-events: none; z-index: 2;
+}
+.corner.tl { top: 28px; left: 36px; border-top: 1px solid var(--gold-line); border-left: 1px solid var(--gold-line); }
+.corner.tr { top: 28px; right: 36px; border-top: 1px solid var(--gold-line); border-right: 1px solid var(--gold-line); }
+.corner.bl { bottom: 28px; left: 36px; border-bottom: 1px solid var(--gold-line); border-left: 1px solid var(--gold-line); }
+.corner.br { bottom: 28px; right: 36px; border-bottom: 1px solid var(--gold-line); border-right: 1px solid var(--gold-line); }
+
 /* ── Deck ── */
-.deck { position: relative; width: 100%; height: 100%; }
+.deck {
+  position: relative; width: 100%; height: 100%;
+  z-index: 1;
+}
 
 .slide {
   position: absolute; inset: 0;
   display: flex; flex-direction: column;
   justify-content: center; align-items: flex-start;
-  padding: 72px 96px;
+  padding: 80px 108px;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.55s ease;
 }
 .slide.active { opacity: 1; pointer-events: all; }
 
-/* ── Progress ── */
+/* ── Progress bar ── */
 #progress {
   position: fixed; top: 0; left: 0;
-  height: 1px; background: var(--accent);
-  transition: width 0.5s ease;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), rgba(200,168,106,0.3));
+  transition: width 0.65s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 99;
+  box-shadow: 0 0 14px var(--gold-glow);
 }
 
 /* ── Counter ── */
 #counter {
-  position: fixed; bottom: 32px; right: 48px;
-  font-size: 11px; color: var(--muted);
-  letter-spacing: 0.12em;
-  font-feature-settings: 'tnum';
+  position: fixed; bottom: 38px; right: 56px;
+  font-size: 10px; color: var(--muted);
+  letter-spacing: 0.22em; font-weight: 300;
 }
 
 /* ── Dots ── */
 #dots {
-  position: fixed; bottom: 36px; left: 50%;
+  position: fixed; bottom: 42px; left: 50%;
   transform: translateX(-50%);
-  display: flex; gap: 8px;
+  display: flex; gap: 8px; align-items: center;
 }
 .dot {
   width: 4px; height: 4px; border-radius: 50%;
   background: var(--dim); cursor: pointer;
   transition: all 0.3s ease;
 }
-.dot.on { background: var(--accent); width: 20px; border-radius: 2px; }
+.dot.on { background: var(--gold); width: 26px; border-radius: 2px; box-shadow: 0 0 8px var(--gold-glow); }
 
-/* ── Shared ── */
+/* Nav hint */
+.nav-hint {
+  position: fixed; bottom: 38px; left: 56px;
+  font-size: 9px; color: var(--dim); letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+
+/* ── Labels ── */
 .label {
-  font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
-  color: var(--muted); margin-bottom: 20px;
-  opacity: 0; transform: translateY(8px);
+  font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 20px;
+  opacity: 0; transform: translateY(6px);
   animation: up 0.5s 0.05s forwards;
 }
-h1, h2 {
-  font-family: 'Playfair Display', serif;
-  font-weight: 400;
-  opacity: 0; transform: translateY(12px);
-  animation: up 0.5s 0.12s forwards;
+
+/* ── Headlines ── */
+h1 {
+  font-family: 'Cormorant', serif;
+  font-weight: 500;
+  font-size: clamp(60px, 7vw, 96px); line-height: 0.97;
+  color: var(--text);
+  opacity: 0; transform: translateY(16px);
+  animation: up 0.65s 0.1s forwards;
+  letter-spacing: -0.01em;
 }
-h1 { font-size: clamp(44px, 5.5vw, 74px); line-height: 1.05; color: #fff; }
-h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
+h2 {
+  font-family: 'Cormorant', serif;
+  font-weight: 500;
+  font-size: clamp(36px, 4.5vw, 64px); line-height: 1.05;
+  color: var(--text);
+  opacity: 0; transform: translateY(14px);
+  animation: up 0.65s 0.1s forwards;
+}
 
 .sub {
-  font-size: 13px; color: var(--muted); letter-spacing: 0.06em;
-  margin-top: 6px;
-  opacity: 0; transform: translateY(8px);
-  animation: up 0.5s 0.2s forwards;
+  font-size: 11px; color: var(--muted); letter-spacing: 0.18em;
+  margin-top: 8px; text-transform: uppercase; font-weight: 300;
+  opacity: 0; transform: translateY(6px);
+  animation: up 0.5s 0.22s forwards;
 }
 
 .rule {
-  width: 32px; height: 1px; background: var(--accent);
+  width: 48px; height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
   margin: 28px 0;
-  opacity: 0; animation: up 0.5s 0.18s forwards;
+  opacity: 0; animation: fadein 0.6s 0.2s forwards;
 }
 
 @keyframes up {
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes fadein {
+  to { opacity: 1; }
+}
 @keyframes in {
-  from { opacity: 0; transform: translateX(-12px); }
+  from { opacity: 0; transform: translateX(-10px); }
   to   { opacity: 1; transform: translateX(0); }
 }
 
 /* ── Hero ── */
 .hero-tagline {
-  max-width: 560px; font-size: 15px; line-height: 1.8;
-  color: #666; margin-bottom: 44px;
-  opacity: 0; animation: up 0.5s 0.28s forwards;
+  max-width: 580px;
+  font-size: 15px; line-height: 1.9;
+  color: var(--muted); margin-bottom: 44px;
+  opacity: 0; animation: up 0.55s 0.3s forwards;
+  font-weight: 300;
 }
 .chips {
   display: flex; gap: 10px; flex-wrap: wrap;
-  opacity: 0; animation: up 0.5s 0.36s forwards;
+  opacity: 0; animation: up 0.55s 0.4s forwards;
 }
 .chip {
-  padding: 7px 16px; border-radius: 4px;
-  border: 1px solid var(--border);
-  font-size: 12px; color: #888;
-  text-decoration: none;
-  transition: border-color 0.2s, color 0.2s;
+  padding: 9px 20px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  font-size: 11px; color: var(--muted);
+  text-decoration: none; letter-spacing: 0.06em;
+  transition: border-color 0.25s, color 0.25s, background 0.25s;
 }
-.chip:hover { border-color: #444; color: var(--text); }
+.chip:hover {
+  border-color: var(--gold-line);
+  color: var(--gold);
+  background: var(--gold-dim);
+}
 
 /* ── Bullets ── */
-.bullets { margin-top: 4px; width: 100%; max-width: 800px; }
+.bullets { margin-top: 4px; width: 100%; max-width: 820px; }
 .b {
   display: flex; gap: 20px; align-items: baseline;
-  padding: 12px 0; border-bottom: 1px solid var(--border);
+  padding: 13px 0; border-bottom: 1px solid var(--border);
   opacity: 0; animation: in 0.4s forwards;
-  font-size: 14px; line-height: 1.65; color: #888;
+  font-size: 13.5px; line-height: 1.7; color: var(--muted);
+  font-weight: 300;
 }
 .b:first-child { border-top: 1px solid var(--border); }
-.b-num { font-size: 10px; color: var(--dim); width: 18px; flex-shrink: 0; padding-top: 2px; }
+.b-num { font-size: 9px; color: var(--dim); width: 18px; flex-shrink: 0; padding-top: 3px; letter-spacing: 0.08em; }
 .b strong { color: var(--text); font-weight: 500; }
 .b .hi {
-  color: var(--accent); font-size: 11px;
-  background: rgba(232,255,112,0.08);
-  padding: 1px 6px; border-radius: 3px;
+  color: var(--gold); font-size: 11px;
+  background: var(--gold-dim);
+  padding: 1px 7px;
   font-feature-settings: 'tnum';
+  letter-spacing: 0.05em;
 }
 
 .b:nth-child(1) { animation-delay: 0.08s; }
@@ -159,21 +232,29 @@ h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 1px; width: 100%; max-width: 820px;
   background: var(--border); border: 1px solid var(--border);
-  border-radius: 8px; overflow: hidden; margin-top: 4px;
+  margin-top: 4px; overflow: hidden;
 }
 .pc {
-  background: var(--bg); padding: 28px 32px;
+  background: var(--surface); padding: 28px 32px;
   opacity: 0; animation: up 0.4s forwards;
   transition: background 0.2s;
+  position: relative;
 }
-.pc:hover { background: var(--surface); }
+.pc::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, var(--gold-line), transparent);
+  opacity: 0; transition: opacity 0.25s;
+}
+.pc:hover { background: var(--surface2); }
+.pc:hover::before { opacity: 1; }
 .pc:nth-child(1) { animation-delay: 0.08s; }
 .pc:nth-child(2) { animation-delay: 0.16s; }
 .pc:nth-child(3) { animation-delay: 0.24s; }
 .pc:nth-child(4) { animation-delay: 0.32s; }
-.pc-num { font-size: 10px; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 10px; }
-.pc-name { font-size: 18px; font-weight: 500; color: #fff; margin-bottom: 8px; }
-.pc-desc { font-size: 12px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
+.pc-num { font-size: 9px; color: var(--gold); letter-spacing: 0.22em; margin-bottom: 10px; text-transform: uppercase; }
+.pc-name { font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 8px; font-family: 'Cormorant', serif; }
+.pc-desc { font-size: 12px; color: var(--muted); line-height: 1.65; margin-bottom: 16px; font-weight: 300; }
 .gh {
   display: inline-flex; align-items: center; gap: 6px;
   font-size: 10px; color: var(--muted); letter-spacing: 0.06em;
@@ -181,84 +262,136 @@ h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
   border-bottom: 1px solid transparent;
   transition: color 0.2s, border-color 0.2s;
 }
-.gh:hover { color: var(--accent); border-color: var(--accent); }
+.gh:hover { color: var(--gold); border-color: var(--gold-line); }
 .gh svg { flex-shrink: 0; }
 
 /* ── Project detail ── */
 .pd { width: 100%; max-width: 860px; }
 .pd-head {
   display: flex; align-items: flex-start; justify-content: space-between;
-  margin-bottom: 32px;
+  margin-bottom: 28px;
   opacity: 0; animation: up 0.5s 0.05s forwards;
 }
 .pd-links { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; margin-top: 4px; }
 .pd-body {
   display: grid; grid-template-columns: 1fr 1fr;
   gap: 1px; background: var(--border);
-  border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  border: 1px solid var(--border); overflow: hidden;
 }
 .pd-cell {
-  background: var(--bg); padding: 24px 28px;
+  background: var(--surface); padding: 22px 26px;
   opacity: 0; animation: up 0.4s forwards;
+  transition: background 0.2s;
 }
-.pd-cell:hover { background: var(--surface); transition: background 0.2s; }
+.pd-cell:hover { background: var(--surface2); }
 .pd-cell:nth-child(1) { animation-delay: 0.12s; }
 .pd-cell:nth-child(2) { animation-delay: 0.20s; }
 .pd-cell:nth-child(3) { animation-delay: 0.28s; }
 .pd-cell:nth-child(4) { animation-delay: 0.36s; }
 .cell-label {
-  font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
-  color: var(--muted); margin-bottom: 14px;
+  font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 12px;
 }
-.pd-cell p { font-size: 13px; line-height: 1.75; color: #666; }
+.pd-cell p { font-size: 12.5px; line-height: 1.78; color: var(--muted); font-weight: 300; }
 .pd-cell p strong { color: var(--text); font-weight: 500; }
-.steps { display: flex; flex-direction: column; gap: 8px; }
-.step { display: flex; gap: 12px; align-items: baseline; font-size: 12px; color: #666; }
+.steps { display: flex; flex-direction: column; gap: 7px; }
+.step { display: flex; gap: 12px; align-items: baseline; font-size: 12px; color: var(--muted); font-weight: 300; }
 .sn {
-  font-size: 9px; color: var(--muted);
-  border: 1px solid var(--dim);
-  width: 18px; height: 18px; border-radius: 3px;
+  font-size: 8px; color: var(--dim);
+  border: 1px solid var(--border2);
+  width: 18px; height: 18px;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
+  flex-shrink: 0; letter-spacing: 0;
 }
 .tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .tag {
-  font-size: 10px; color: #555;
-  border: 1px solid var(--dim);
-  padding: 3px 9px; border-radius: 3px;
-  letter-spacing: 0.04em;
+  font-size: 10px; color: var(--muted);
+  border: 1px solid var(--border2);
+  padding: 3px 9px; letter-spacing: 0.04em; font-weight: 300;
 }
 
-/* ── Future ── */
-.fg {
-  display: grid; grid-template-columns: 1fr 1fr;
-  gap: 24px; width: 100%; max-width: 820px;
+/* ── Architecture ── */
+.arch {
+  margin-top: 10px; max-width: 860px; width: 100%;
+  padding: 14px 18px;
+  border: 1px solid var(--border); background: var(--surface);
+  opacity: 0; animation: fadein 0.5s 0.44s forwards;
 }
-.fc {
-  padding: 36px; border: 1px solid var(--border); border-radius: 8px;
-  opacity: 0; animation: up 0.5s forwards;
+.arch-label {
+  font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 10px;
 }
-.fc:nth-child(1) { animation-delay: 0.12s; }
-.fc:nth-child(2) { animation-delay: 0.24s; }
-.fc-title { font-size: 17px; font-weight: 500; color: #fff; margin-bottom: 16px; }
-.fc p { font-size: 13px; line-height: 1.8; color: #666; }
-.fc p strong { color: var(--text); font-weight: 500; }
-.fc-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-bottom: 20px; }
+.arch-flow {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+}
+.arch-node {
+  font-size: 10px; color: var(--muted);
+  border: 1px solid var(--border2); padding: 4px 10px;
+  background: var(--surface2); white-space: nowrap; font-weight: 300;
+}
+.arch-node.hi {
+  border-color: var(--gold-line);
+  color: var(--gold); background: var(--gold-dim);
+}
+.arch-node.group {
+  display: flex; flex-direction: column; gap: 4px;
+  border: none; padding: 0; background: none;
+}
+.arch-node.group .arch-node { font-size: 10px; }
+.arch-arr { color: var(--dim); font-size: 12px; flex-shrink: 0; }
 
 /* ── Badge ── */
 .badge {
-  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
-  padding: 4px 10px; border-radius: 3px;
-  border: 1px solid var(--border); color: var(--muted);
+  font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 5px 11px; border: 1px solid var(--border2); color: var(--muted);
 }
-.badge.live { border-color: rgba(232,255,112,0.25); color: rgba(232,255,112,0.6); }
+.badge.live { border-color: var(--gold-line); color: var(--gold); }
+
+/* ── Future ── */
+.fg {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px; width: 100%; max-width: 960px;
+}
+.fc {
+  padding: 28px; border: 1px solid var(--border);
+  background: var(--surface);
+  opacity: 0; animation: up 0.5s forwards;
+  position: relative; overflow: hidden;
+}
+.fc::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, var(--gold-line), transparent);
+}
+.fc:nth-child(1) { animation-delay: 0.12s; }
+.fc:nth-child(2) { animation-delay: 0.22s; }
+.fc:nth-child(3) { animation-delay: 0.32s; }
+.fc-title {
+  font-family: 'Cormorant', serif;
+  font-size: 22px; font-weight: 500; color: var(--text);
+  margin-bottom: 14px;
+}
+.fc p { font-size: 12.5px; line-height: 1.85; color: var(--muted); font-weight: 300; }
+.fc p strong { color: var(--text); font-weight: 500; }
+.fc-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); margin-bottom: 20px;
+  box-shadow: 0 0 10px var(--gold-glow);
+}
 </style>
 </head>
 <body>
 
+<!-- Corner accent brackets -->
+<div class="corner tl"></div>
+<div class="corner tr"></div>
+<div class="corner bl"></div>
+<div class="corner br"></div>
+
 <div id="progress"></div>
 <div id="counter"></div>
 <div id="dots"></div>
+<div class="nav-hint">← → Navigate</div>
 
 <div class="deck">
 
@@ -267,302 +400,349 @@ h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
   <div class="label">AI Engineer · Tampa, USA · 2026</div>
   <h1>Lakshmidhar<br>Kotipalli</h1>
   <div class="rule"></div>
-  <p class="hero-tagline">Specialized in digitizing supply chain documents and designing systems that convert unstructured information into reliable operational data.</p>
+  <p class="hero-tagline">Building multimodal AI pipelines, on-prem RAG systems, and agentic applications.</p>
   <div class="chips">
     <a class="chip" href="mailto:lakshmidhar.k11@gmail.com">lakshmidhar.k11@gmail.com</a>
     <a class="chip" href="tel:+16562150975">+1 (656) 215-0975</a>
-    <a class="chip" href="https://linkedin.com/in/lakshmidhar-kotipalli" target="_blank">LinkedIn</a>
+    <a class="chip" href="https://www.linkedin.com/in/kldhar/" target="_blank">LinkedIn</a>
+    <a class="chip" href="https://github.com/LakshmidharKotipalli" target="_blank">GitHub</a>
   </div>
 </div>
 
-<!-- 2. PhFlow -->
+<!-- 2. Experience Summary -->
+<div class="slide">
+  <div class="label">AI Engineering Experience</div>
+  <h2>Professional Experience</h2>
+  <div class="rule"></div>
+  <div class="exp-list">
+
+    <div style="background:var(--surface);border:1px solid var(--border2);border-left:2px solid var(--gold-line);padding:24px 28px;opacity:0;animation:up 0.5s 0.15s forwards">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:16px">
+        <div style="font-family:'Cormorant',serif;font-size:24px;font-weight:500;color:var(--text)">PhFlow AI</div>
+        <div style="font-size:9px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;white-space:nowrap">July 2025 – Present &nbsp;·&nbsp; AI Engineer</div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);font-weight:300;line-height:1.8">
+        Built document digitization pipelines that convert physical documents into structured data, and a compliance RAG chat grounded on FDA regulatory data — fully private, zero data leaves the network.
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border2);border-left:2px solid var(--border2);padding:24px 28px;opacity:0;animation:up 0.5s 0.3s forwards">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;gap:16px">
+        <div style="font-family:'Cormorant',serif;font-size:24px;font-weight:500;color:var(--text)">GanaIT</div>
+        <div style="font-size:9px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;white-space:nowrap">May 2024 – June 2025 &nbsp;·&nbsp; AI Engineer</div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);font-weight:300;line-height:1.8">
+        Designed an agentic RAG system with dynamic query routing between internal documents and live web search — one interface for both authoritative and real-time answers, fully on-prem with zero cloud API calls.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 3. PhFlow -->
 <div class="slide">
   <div class="label" style="display:flex;align-items:center;gap:10px">
-    <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulse 2s infinite"></span>
+    <span style="width:5px;height:5px;border-radius:50%;background:var(--gold);display:inline-block;box-shadow:0 0 8px var(--gold-glow);animation:pulse 2s infinite"></span>
     Current · PhFlow AI · Tampa, USA · July 2025 – Present
   </div>
-  <h2>PhFlow AI</h2>
-  <div class="sub">AI Engineer</div>
+  <h2>Document Intelligence &amp; Compliance AI</h2>
+  <div class="sub">AI Engineer · PhFlow AI</div>
   <div class="rule"></div>
-  <div class="bullets">
-    <div class="b"><span class="b-num">01</span><span>Built a <strong>vision-language model pipeline</strong> to digitize shipment documents from <span class="hi">15+ vendor layouts</span>, stabilizing extraction where coordinate-based OCR rules fail.</span></div>
-    <div class="b"><span class="b-num">02</span><span>Implemented <strong>schema-constrained prompts</strong> to reduce hallucinated values during extraction, preventing incorrect data from entering downstream records.</span></div>
-    <div class="b"><span class="b-num">03</span><span>Generated <strong>synthetic shipment documents</strong> with image augmentation to expand training data and improve robustness across layout variations.</span></div>
-    <div class="b"><span class="b-num">04</span><span><strong>Private GPU deployment</strong> — model inference on sensitive documents runs entirely within internal systems, zero external data exposure.</span></div>
-    <div class="b"><span class="b-num">05</span><span><strong>Model quantization</strong> + inference tuning reduced processing time from <span class="hi">~16s</span> to <span class="hi">&lt;10s</span> per document.</span></div>
-    <div class="b"><span class="b-num">06</span><span>Integrated an <strong>AI assistant RAG system</strong> into warehouse workflows for real-time inventory and shipment queries from internal documents.</span></div>
-    <div class="b"><span class="b-num">07</span><span>Proposed a <strong>digital twin simulation framework</strong> for warehouse operations to identify bottlenecks before real-world execution.</span></div>
+
+  <div class="bullets" style="max-width:860px">
+    <div class="b" style="border-top:none;padding-top:0;flex-direction:column;gap:8px;border-bottom:1px solid var(--border)">
+      <span style="font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)">What I Built</span>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:300;line-height:1.7"><span style="color:var(--dim);font-size:9px;padding-top:3px;flex-shrink:0">→</span><span><strong>Document digitization pipeline</strong> — delivery receipts &amp; packing lists → structured data via Qwen3-VL (upload → preprocess → extract → reconcile → UI)</span></div>
+        <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:300;line-height:1.7"><span style="color:var(--dim);font-size:9px;padding-top:3px;flex-shrink:0">→</span><span><strong>Compliance RAG chat</strong> — grounded Q&amp;A over CFR-21 regulatory data using Qwen3.5, with citation-backed responses</span></div>
+      </div>
+    </div>
+    <div class="b" style="flex-direction:column;gap:8px;border-bottom:1px solid var(--border)">
+      <span style="font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)">How I Made It Reliable</span>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:300;line-height:1.7"><span style="color:var(--dim);font-size:9px;padding-top:3px;flex-shrink:0">→</span><span><strong>Schema-enforced prompting</strong> + reconciliation layer to catch hallucinations before they hit records</span></div>
+        <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:300;line-height:1.7"><span style="color:var(--dim);font-size:9px;padding-top:3px;flex-shrink:0">→</span><span><strong>Quantization + inference tuning</strong> for lower per-document latency</span></div>
+      </div>
+    </div>
+    <div class="b" style="flex-direction:column;gap:8px;border-bottom:1px solid var(--border)">
+      <span style="font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)">Where It Runs</span>
+      <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:300;line-height:1.7"><span style="color:var(--dim);font-size:9px;padding-top:3px;flex-shrink:0">→</span><span>Self-hosted on <strong>RunPod private GPUs</strong> — no document or regulatory data leaves internal systems</span></div>
+    </div>
   </div>
 </div>
 
-<!-- 3. GanaIT -->
+<!-- 4. GanaIT -->
 <div class="slide">
   <div class="label">Previous · GanaIT · Tampa, USA · May 2024 – June 2025</div>
-  <h2>GanaIT</h2>
-  <div class="sub">AI Engineer</div>
+  <h2>Agentic RAG System</h2>
+  <div class="sub">AI Engineer · GanaIT</div>
   <div class="rule"></div>
-  <div class="bullets">
-    <div class="b"><span class="b-num">01</span><span>Built a <strong>RAG Q&A system</strong> routing queries between internal documents and live web search — answers without leaving the platform.</span></div>
-    <div class="b"><span class="b-num">02</span><span>Developed a <strong>hybrid routing layer</strong> — regex pattern detection for structured queries plus a small LLM for semantic classification, achieving <span class="hi">~95% accuracy</span>.</span></div>
-    <div class="b"><span class="b-num">03</span><span>Engineered retrieval with <strong>Qdrant + BGE embeddings</strong>, cosine similarity filtering, and adaptive top-k expansion for reliable context generation.</span></div>
-    <div class="b"><span class="b-num">04</span><span>Indexed <span class="hi">9 volumes · ~12,000 pages</span> of private documents into vector embeddings for large-scale semantic search.</span></div>
-    <div class="b"><span class="b-num">05</span><span>Deployed locally with <strong>llama.cpp + GGUF models</strong> — no data transmitted to external APIs or cloud-hosted language models.</span></div>
+
+  <div class="bullets" style="max-width:860px">
+    <div class="b" style="border-top:none;padding-top:0;flex-direction:column;gap:8px;border-bottom:1px solid var(--border)">
+      <span style="font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)">What I Built</span>
+      <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:300;line-height:1.7"><span style="color:var(--dim);font-size:9px;padding-top:3px;flex-shrink:0">→</span><span><strong>Agentic RAG with dynamic query routing</strong> between internal documents and live web search — one interface delivering authoritative and near real-time answers</span></div>
+    </div>
+    <div class="b" style="flex-direction:column;gap:8px;border-bottom:1px solid var(--border)">
+      <span style="font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)">How Routing Works</span>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:300;line-height:1.7"><span style="color:var(--dim);font-size:9px;padding-top:3px;flex-shrink:0">→</span><span><strong>Two-stage router</strong> — regex for structured queries + Gemma3-1B for semantic intent classification, ~95% routing accuracy</span></div>
+        <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:300;line-height:1.7"><span style="color:var(--dim);font-size:9px;padding-top:3px;flex-shrink:0">→</span><span><strong>Retrieval</strong> — Qdrant + BGE embeddings, cosine similarity filtering, adaptive top-k expansion</span></div>
+        <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:300;line-height:1.7"><span style="color:var(--dim);font-size:9px;padding-top:3px;flex-shrink:0">→</span><span><strong>Generation</strong> — Gemma3-4B grounded on retrieved context</span></div>
+      </div>
+    </div>
+    <div class="b" style="flex-direction:column;gap:8px;border-bottom:1px solid var(--border)">
+      <span style="font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold)">Where It Runs</span>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:300;line-height:1.7"><span style="color:var(--dim);font-size:9px;padding-top:3px;flex-shrink:0">→</span><span><strong>Fully on-prem</strong> — vLLM serving engine for high-throughput local inference</span></div>
+        <div style="display:flex;gap:12px;font-size:13px;color:var(--muted);font-weight:300;line-height:1.7"><span style="color:var(--dim);font-size:9px;padding-top:3px;flex-shrink:0">→</span><span>Zero cloud API calls, zero external providers — <strong>privacy as an architectural constraint</strong></span></div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- 4. Projects Overview -->
+<!-- 5. Projects Overview -->
 <div class="slide">
-  <div class="label">Side Projects</div>
-  <h2>Building in the Open</h2>
+  <div class="label">Personal Projects</div>
+  <h2>Personal Projects</h2>
+  <div class="sub">Self-directed builds · local inference · agents · multimodal</div>
   <div class="rule"></div>
-  <div class="pg">
-    <div class="pc">
-      <div class="pc-num">01 · PUBLIC</div>
-      <div class="pc-name">DocMe</div>
-      <div class="pc-desc">Privacy-first macOS activity tracker. Python agent + local LLM generates daily summaries. Zero cloud.</div>
-      <a class="gh" href="https://github.com/LakshmidharKotipalli/DocMe" target="_blank">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.74-1.33-1.74-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
-        LakshmidharKotipalli/DocMe
-      </a>
+  <div class="proj-ov-grid">
+    <div style="background:var(--surface);padding:32px 36px;display:flex;flex-direction:column;min-height:180px;opacity:0;animation:up 0.4s 0.08s forwards">
+      <div style="font-family:'Cormorant',serif;font-size:26px;font-weight:500;color:var(--text);margin-bottom:10px">01 · DocMe</div>
+      <div style="font-size:13px;color:var(--muted);font-weight:300;line-height:1.6;flex:1">Passive activity tracker with local LLM summaries</div>
+      <a class="gh" href="https://github.com/LakshmidharKotipalli/DocMe" target="_blank" style="margin-top:16px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>View on GitHub</a>
     </div>
-    <div class="pc">
-      <div class="pc-num">02 · PUBLIC</div>
-      <div class="pc-name">GeoCanvas</div>
-      <div class="pc-desc">Click any point on Earth, get a Stable Diffusion XL artwork. Location-aware prompt generation via Nominatim.</div>
-      <a class="gh" href="https://github.com/LakshmidharKotipalli/geo-canvas" target="_blank">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.74-1.33-1.74-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
-        LakshmidharKotipalli/geo-canvas
-      </a>
+    <div style="background:var(--surface);padding:32px 36px;display:flex;flex-direction:column;min-height:180px;opacity:0;animation:up 0.4s 0.16s forwards">
+      <div style="font-family:'Cormorant',serif;font-size:26px;font-weight:500;color:var(--text);margin-bottom:10px">02 · Recruiter</div>
+      <div style="font-size:13px;color:var(--muted);font-weight:300;line-height:1.6;flex:1">Multi-agent candidate scoring system</div>
+      <a class="gh" href="https://github.com/LakshmidharKotipalli/Recruiter" target="_blank" style="margin-top:16px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>View on GitHub</a>
     </div>
-    <div class="pc">
-      <div class="pc-num">03 · PRIVATE</div>
-      <div class="pc-name">Recruiter Agent</div>
-      <div class="pc-desc">Agentic candidate sourcing with Claude. 7-layer pipeline — JD understanding, multi-source fetch, scored shortlists.</div>
-      <span class="gh">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        LakshmidharKotipalli/Recruiter
-      </span>
+    <div style="background:var(--surface);padding:32px 36px;display:flex;flex-direction:column;min-height:180px;opacity:0;animation:up 0.4s 0.24s forwards">
+      <div style="font-family:'Cormorant',serif;font-size:26px;font-weight:500;color:var(--text);margin-bottom:10px">03 · Job Applier</div>
+      <div style="font-size:13px;color:var(--muted);font-weight:300;line-height:1.6;flex:1">Local pipeline for job matching &amp; cover letters</div>
+      <a class="gh" href="https://github.com/LakshmidharKotipalli/Job-Applier" target="_blank" style="margin-top:16px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>View on GitHub</a>
     </div>
-    <div class="pc">
-      <div class="pc-num">04 · PRIVATE</div>
-      <div class="pc-name">Job Application Agent</div>
-      <div class="pc-desc">Fully local pipeline — scrapes 6 job boards, scores fit via Ollama LLM, writes cover letters, applies.</div>
-      <span class="gh">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        LakshmidharKotipalli/job-agent
-      </span>
+    <div style="background:var(--surface);padding:32px 36px;display:flex;flex-direction:column;min-height:180px;opacity:0;animation:up 0.4s 0.32s forwards">
+      <div style="font-family:'Cormorant',serif;font-size:26px;font-weight:500;color:var(--text);margin-bottom:10px">04 · GeoCanvas</div>
+      <div style="font-size:13px;color:var(--muted);font-weight:300;line-height:1.6;flex:1">Street View + prompt → AI-transformed scenes</div>
+      <a class="gh" href="https://github.com/LakshmidharKotipalli/GeoCanvas" target="_blank" style="margin-top:16px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>View on GitHub</a>
     </div>
   </div>
 </div>
 
-<!-- 5. DocMe -->
+<!-- 6. DocMe -->
 <div class="slide">
-  <div class="pd">
-    <div class="pd-head">
-      <div>
-        <div class="label" style="margin-bottom:14px">Project 01 · Public</div>
-        <h2>DocMe</h2>
-        <div class="sub">Privacy-First macOS Activity Tracker with AI Daily Summaries</div>
-      </div>
-      <div class="pd-links">
-        <a class="gh" href="https://github.com/LakshmidharKotipalli/DocMe" target="_blank">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.74-1.33-1.74-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          View on GitHub
-        </a>
-        <span class="badge">Released as DMG</span>
-      </div>
-    </div>
-    <div class="pd-body">
-      <div class="pd-cell">
-        <div class="cell-label">Problem</div>
-        <p>Knowledge workers have no coherent record of their workday. Existing tools (RescueTime, Toggl) send data to cloud servers — a serious privacy risk for anyone handling proprietary code or sensitive documents.</p>
-      </div>
-      <div class="pd-cell">
-        <div class="cell-label">Solution</div>
-        <p>Native macOS <strong>Electron app</strong>. Python agent polls every <strong>1.5s</strong> — active windows, URLs via browser extension, file changes. Local SQLite. <strong>llama.cpp + gemma</strong> generates natural-language daily summaries on demand. Zero config.</p>
-      </div>
-      <div class="pd-cell">
-        <div class="cell-label">Key Design Decisions</div>
-        <div class="steps">
-          <div class="step"><span class="sn">→</span> Zero cloud — everything stays on disk</div>
-          <div class="step"><span class="sn">→</span> Bundled Python runtime — no install required</div>
-          <div class="step"><span class="sn">→</span> Chrome/Firefox extension for URL capture</div>
-          <div class="step"><span class="sn">→</span> Quick Notes capture current app context</div>
-          <div class="step"><span class="sn">→</span> SQLite default — no database server needed</div>
+  <div class="proj">
+    <div class="proj-left">
+      <div class="label">Project 01 · DocMe</div>
+      <h2>DocMe</h2>
+      <div class="sub">Daily work documentation, locally</div>
+      <div class="rule"></div>
+      <p class="proj-problem">You've written code, read articles, browsed docs all day — and have no record of any of it. Memory is the only log, and it fails. Existing trackers send your data to the cloud.</p>
+      <div class="proj-stack">
+        <div class="proj-stack-label">Stack</div>
+        <div class="tags">
+          <span class="tag">Electron</span><span class="tag">React + Vite</span><span class="tag">FastAPI</span>
+          <span class="tag">Python</span><span class="tag">SQLite</span><span class="tag">llama.cpp</span><span class="tag">gemma-3-1b</span><span class="tag">PyObjC</span>
         </div>
       </div>
-      <div class="pd-cell">
-        <div class="cell-label">Stack</div>
-        <div class="tags">
-          <span class="tag">Electron</span><span class="tag">React + Vite</span><span class="tag">TypeScript</span>
-          <span class="tag">FastAPI</span><span class="tag">Python 3.12</span><span class="tag">SQLite</span>
-          <span class="tag">llama.cpp</span><span class="tag">gemma-3-1b</span><span class="tag">PyObjC</span>
+      <a class="gh" href="https://github.com/LakshmidharKotipalli/DocMe" target="_blank" style="margin-top:20px;opacity:0;animation:up 0.5s 0.48s forwards"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>github.com / DocMe</a>
+    </div>
+    <div class="proj-right">
+      <div class="proj-arch-label">Architecture</div>
+      <div class="vflow">
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">01</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Screen &amp; Browser Watcher</div><div class="vnode-desc">PyObjC polls active app, window title, and URLs via browser extension every 1.5s</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">02</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Python Agent</div><div class="vnode-desc">Classifies events — code edit, browsing, reading, idle — and writes structured records</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot">03</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">SQLite Store</div><div class="vnode-desc">All activity logged on-disk. No server, no cloud sync, no outbound traffic</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">04</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Local LLM · gemma-3-1b via llama.cpp</div><div class="vnode-desc">Reads the day's event log and synthesizes a natural-language summary on demand</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot">05</div></div>
+          <div class="vnode-body"><div class="vnode-name">Electron UI</div><div class="vnode-desc">Displays daily report, supports quick-note annotations, packaged as a macOS DMG</div></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 6. GeoCanvas -->
+<!-- 7. GeoCanvas -->
 <div class="slide">
-  <div class="pd">
-    <div class="pd-head">
-      <div>
-        <div class="label" style="margin-bottom:14px">Project 02 · Public</div>
-        <h2>GeoCanvas</h2>
-        <div class="sub">Location-Aware AI Image Generation</div>
-      </div>
-      <div class="pd-links">
-        <a class="gh" href="https://github.com/LakshmidharKotipalli/geo-canvas" target="_blank">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.74-1.33-1.74-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          View on GitHub
-        </a>
-      </div>
-    </div>
-    <div class="pd-body">
-      <div class="pd-cell">
-        <div class="cell-label">Problem</div>
-        <p>Standard text-to-image tools have no sense of place. Writing a location-accurate prompt requires knowing the exact place name — the prompt is the hardest part, not the generation itself.</p>
-      </div>
-      <div class="pd-cell">
-        <div class="cell-label">Solution</div>
-        <p>Click any point on Earth on an interactive <strong>Leaflet map</strong> → Nominatim reverse geocodes coordinates → auto-fills an editable prompt → <strong>Stable Diffusion XL</strong> generates a <strong>1024×1024</strong> image. 4 presets included.</p>
-      </div>
-      <div class="pd-cell">
-        <div class="cell-label">Pipeline</div>
-        <div class="steps">
-          <div class="step"><span class="sn">1</span> Map click → lat/lng state</div>
-          <div class="step"><span class="sn">2</span> Nominatim reverse geocode → place name</div>
-          <div class="step"><span class="sn">3</span> Auto-filled, editable prompt</div>
-          <div class="step"><span class="sn">4</span> POST /api/generate → SDXL pipeline</div>
-          <div class="step"><span class="sn">5</span> PNG returned as base64 → display + download</div>
+  <div class="proj">
+    <div class="proj-left">
+      <div class="label">Project 02 · GeoCanvas</div>
+      <h2>GeoCanvas</h2>
+      <div class="sub">Street View + prompt → AI-transformed scene</div>
+      <div class="rule"></div>
+      <p class="proj-problem">Text-to-image has no sense of real place. You can't say "transform this exact corner" — diffusion models work from text alone, with no grounding in the actual location.</p>
+      <div class="proj-stack">
+        <div class="proj-stack-label">Stack</div>
+        <div class="tags">
+          <span class="tag">Next.js 15</span><span class="tag">FastAPI</span><span class="tag">Google Maps API</span>
+          <span class="tag">Stable Diffusion</span><span class="tag">img2img</span><span class="tag">OpenCV</span><span class="tag">TypeScript</span>
         </div>
       </div>
-      <div class="pd-cell">
-        <div class="cell-label">Stack</div>
-        <div class="tags">
-          <span class="tag">Next.js 15</span><span class="tag">React 19</span><span class="tag">TypeScript</span>
-          <span class="tag">Tailwind</span><span class="tag">Leaflet</span><span class="tag">FastAPI</span>
-          <span class="tag">SDXL</span><span class="tag">MiDaS DPT</span><span class="tag">OpenCV Canny</span>
+      <a class="gh" href="https://github.com/LakshmidharKotipalli/GeoCanvas" target="_blank" style="margin-top:20px;opacity:0;animation:up 0.5s 0.42s forwards"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>github.com / GeoCanvas</a>
+      <div style="margin-top:20px;padding:12px 14px;border:1px dashed var(--border2);opacity:0;animation:up 0.5s 0.45s forwards">
+        <div style="font-size:8px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);margin-bottom:6px">Future Work</div>
+        <div style="font-size:12px;color:var(--muted);font-weight:300;line-height:1.65">Extend the same pipeline to generate <strong style="color:var(--text)">3D scene renderings</strong> of the location from the prompt — same coordinates, same grounding, spatial depth.</div>
+      </div>
+    </div>
+    <div class="proj-right">
+      <div class="proj-arch-label">Architecture</div>
+      <div class="vflow">
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot">01</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Coordinate Input</div><div class="vnode-desc">User provides latitude &amp; longitude for any point on Earth</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">02</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Google Maps Street View API</div><div class="vnode-desc">Fetches the real-world photo at those exact coordinates as the base image</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot">03</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">User Prompt</div><div class="vnode-desc">Transformation instruction — e.g. "cyberpunk city at night" or "overgrown ruins"</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">04</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">img2img · Stable Diffusion</div><div class="vnode-desc">Applies prompt to the street view image, preserving structural layout of the location</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot">05</div></div>
+          <div class="vnode-body"><div class="vnode-name">Generated Image</div><div class="vnode-desc">Location-grounded scene rendered at full resolution — displayable and downloadable</div></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 7. Recruiter Agent -->
+<!-- 8. Recruiter -->
 <div class="slide">
-  <div class="pd">
-    <div class="pd-head">
-      <div>
-        <div class="label" style="margin-bottom:14px">Project 03 · Private</div>
-        <h2>Recruiter Agent</h2>
-        <div class="sub">AI-Powered Candidate Sourcing & Resume Matching</div>
-      </div>
-      <div class="pd-links">
-        <span class="badge">Private Repo</span>
-      </div>
-    </div>
-    <div class="pd-body">
-      <div class="pd-cell">
-        <div class="cell-label">Problem</div>
-        <p>Manual recruiting doesn't scale. ATS systems do keyword matching — no understanding of the JD, no reasoning about seniority proximity, no explanation for low scores.</p>
-      </div>
-      <div class="pd-cell">
-        <div class="cell-label">7-Layer Agentic Pipeline</div>
-        <div class="steps">
-          <div class="step"><span class="sn">1</span> Understand JD — extract skills, seniority, location</div>
-          <div class="step"><span class="sn">2</span> Generate Boolean queries per source</div>
-          <div class="step"><span class="sn">3</span> Fetch: Google CSE · Naukri · People Data Labs</div>
-          <div class="step"><span class="sn">4</span> Deduplicate via P1–P4 identity resolution</div>
-          <div class="step"><span class="sn">5</span> Score & rank with weighted formula</div>
-          <div class="step"><span class="sn">6</span> Generate natural-language reasoning per candidate</div>
-          <div class="step"><span class="sn">7</span> HITL checkpoints — recruiter stays in control</div>
-        </div>
-      </div>
-      <div class="pd-cell">
-        <div class="cell-label">Scoring Formula</div>
-        <div class="steps">
-          <div class="step"><span class="sn" style="width:24px;font-size:8px">50%</span> Must-have skills matched</div>
-          <div class="step"><span class="sn" style="width:24px;font-size:8px">25%</span> Nice-to-have skills</div>
-          <div class="step"><span class="sn" style="width:24px;font-size:8px">15%</span> Seniority proximity</div>
-          <div class="step"><span class="sn" style="width:24px;font-size:8px">10%</span> Location match</div>
-        </div>
-      </div>
-      <div class="pd-cell">
-        <div class="cell-label">Stack</div>
+  <div class="proj">
+    <div class="proj-left">
+      <div class="label">Project 03 · Recruiter</div>
+      <h2>Recruiter</h2>
+      <div class="sub">Multi-agent candidate matching &amp; reasoning</div>
+      <div class="rule"></div>
+      <p class="proj-problem">ATS tools do keyword matching — no understanding of the JD, no nuanced scoring, no explanation for why a candidate was ranked high or filtered out.</p>
+      <div class="proj-stack">
+        <div class="proj-stack-label">Stack</div>
         <div class="tags">
-          <span class="tag">FastAPI</span><span class="tag">Anthropic Claude</span><span class="tag">tool_use ReAct</span>
-          <span class="tag">SSE Streaming</span><span class="tag">Pydantic v2</span><span class="tag">Google CSE</span>
-          <span class="tag">People Data Labs</span><span class="tag">Vanilla SPA</span>
+          <span class="tag">FastAPI</span><span class="tag">Anthropic Claude</span><span class="tag">ReAct</span>
+          <span class="tag">SSE Streaming</span><span class="tag">Pydantic v2</span><span class="tag">People Data Labs</span><span class="tag">Vanilla SPA</span>
+        </div>
+      </div>
+      <a class="gh" href="https://github.com/LakshmidharKotipalli/Recruiter" target="_blank" style="margin-top:20px;opacity:0;animation:up 0.5s 0.48s forwards"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>github.com / Recruiter</a>
+    </div>
+    <div class="proj-right">
+      <div class="proj-arch-label">Multi-Agent Pipeline · Orchestrated via Anthropic ReAct tool_use</div>
+      <div class="vflow">
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">01</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">JD Extraction Agent</div><div class="vnode-desc">3-step internal pipeline — cleans raw JD, infers implied requirements, extracts typed SearchSpec</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">02</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Query Generation Agent</div><div class="vnode-desc">Generates Boolean search queries per source — Google CSE, Naukri, People Data Labs</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">03</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Profile Fetching Agent</div><div class="vnode-desc">Concurrently dispatches queries to all sources via asyncio.gather, handles partial failures gracefully</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot">04</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Deduplication</div><div class="vnode-desc">P1–P4 identity resolution — merges duplicate profiles across sources by name, email, and URL signals</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">05</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Ranking Agent</div><div class="vnode-desc">Weighted scoring (skills 50% · nice-to-haves 25% · seniority 15% · location 10%) + per-candidate reasoning</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot">06</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Quality Checker</div><div class="vnode-desc">Evaluates shortlist adequacy — recommends accept, broaden, relax location, or force-accept</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">07</div></div>
+          <div class="vnode-body"><div class="vnode-name">HITL Checkpoint</div><div class="vnode-desc">Pipeline pauses for recruiter review — awaits decision before proceeding to next iteration</div></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 8. Job Application Agent -->
+<!-- 9. Job Applier -->
 <div class="slide">
-  <div class="pd">
-    <div class="pd-head">
-      <div>
-        <div class="label" style="margin-bottom:14px">Project 04 · Private</div>
-        <h2>Job Application Agent</h2>
-        <div class="sub">Autonomous, Privacy-First Job Application Pipeline</div>
+  <div class="proj">
+    <div class="proj-left">
+      <div class="label">Project 04 · Job Applier</div>
+      <h2>Job Applier</h2>
+      <div class="sub">Local pipeline for job matching &amp; cover letters</div>
+      <div class="rule"></div>
+      <p class="proj-problem">Checking multiple job boards daily is exhausting. Writing tailored cover letters for each posting is unsustainable. Most generic applications go unread.</p>
+      <div class="proj-stack">
+        <div class="proj-stack-label">Stack</div>
+        <div class="tags">
+          <span class="tag">Playwright</span><span class="tag">Ollama</span><span class="tag">llama3</span>
+          <span class="tag">SQLite</span><span class="tag">Streamlit</span><span class="tag">pypdf</span><span class="tag">Python</span>
+        </div>
       </div>
-      <div class="pd-links">
-        <span class="badge">Private Repo</span>
-      </div>
+      <a class="gh" href="https://github.com/LakshmidharKotipalli/Job-Applier" target="_blank" style="margin-top:20px;opacity:0;animation:up 0.5s 0.48s forwards"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>github.com / Job-Applier</a>
     </div>
-    <div class="pd-body">
-      <div class="pd-cell">
-        <div class="cell-label">Problem</div>
-        <p>Job searching at scale is exhausting — checking 5–6 boards daily, subjective fit assessment, writing generic cover letters. Quality degrades with fatigue. Most applications go unread.</p>
-      </div>
-      <div class="pd-cell">
-        <div class="cell-label">Pipeline (runs locally, while you sleep)</div>
-        <div class="steps">
-          <div class="step"><span class="sn">1</span> Scrape 6 platforms with stealth Playwright</div>
-          <div class="step"><span class="sn">2</span> Deduplicate — 2-phase content hash</div>
-          <div class="step"><span class="sn">3</span> Score vs resume — local Ollama LLM (0–100)</div>
-          <div class="step"><span class="sn">4</span> Generate tailored cover letter if score ≥ 65</div>
-          <div class="step"><span class="sn">5</span> Apply via Playwright (--live mode only)</div>
-          <div class="step"><span class="sn">6</span> Track all jobs + status in SQLite</div>
+    <div class="proj-right">
+      <div class="proj-arch-label">Architecture</div>
+      <div class="vflow">
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">01</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Scraper · Playwright</div><div class="vnode-desc">Stealth-scrapes 6 job boards (Indeed, Glassdoor, Wellfound, Built In, SimplyHired, Jobright) + direct career pages of 9,000+ companies</div></div>
         </div>
-      </div>
-      <div class="pd-cell">
-        <div class="cell-label">Platforms Scraped</div>
-        <div class="tags">
-          <span class="tag">Indeed</span><span class="tag">Glassdoor</span><span class="tag">Built In</span>
-          <span class="tag">Wellfound</span><span class="tag">SimplyHired</span><span class="tag">Jobright</span>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot">02</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Deduplication</div><div class="vnode-desc">2-phase content hash removes duplicate listings across boards</div></div>
         </div>
-      </div>
-      <div class="pd-cell">
-        <div class="cell-label">Stack</div>
-        <div class="tags">
-          <span class="tag">Playwright</span><span class="tag">Ollama</span><span class="tag">llama3 / mistral</span>
-          <span class="tag">SQLite</span><span class="tag">Flask</span><span class="tag">pypdf</span><span class="tag">Python</span>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">03</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Fit Scorer · Ollama (llama3)</div><div class="vnode-desc">Scores each posting against your resume — 0 to 100, runs entirely locally</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot hi">04</div><div class="vnode-line"></div></div>
+          <div class="vnode-body"><div class="vnode-name">Cover Letter Generator</div><div class="vnode-desc">Drafts a tailored cover letter for every posting that scores ≥ 65</div></div>
+        </div>
+        <div class="vnode">
+          <div class="vnode-spine"><div class="vnode-dot">05</div></div>
+          <div class="vnode-body"><div class="vnode-name">Tracker · SQLite</div><div class="vnode-desc">Logs every job, score, cover letter, and application status locally</div></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 9. Future -->
+<!-- 10. Future -->
 <div class="slide">
   <div class="label">What's Next</div>
   <h2>Future Interests</h2>
+  <div class="sub" style="font-style:italic;margin-bottom:0">Where my current work is heading next</div>
   <div class="rule"></div>
-  <div class="fg">
-    <div class="fc">
-      <div class="fc-dot"></div>
-      <div class="fc-title">Digital Twin for Warehouse Operations</div>
-      <p>Simulate <strong>shipment intake, inventory movement, and automation workflows</strong> before real-world execution. Identify bottlenecks, test routing strategies, and evaluate automation ROI in a virtual environment — safely, at zero operational cost.<br><br>Grounded in my current work at PhFlow AI, where I've already proposed this framework as the next evolution of the AI pipeline.</p>
+  <div class="future-grid">
+    <div style="background:var(--surface);border:1px solid var(--border);padding:32px 36px;opacity:0;animation:up 0.5s 0.12s forwards">
+      <div style="font-family:'Cormorant',serif;font-size:24px;font-weight:500;color:var(--text);margin-bottom:18px">Digital Twins</div>
+      <p style="font-size:13.5px;line-height:1.75;color:var(--muted);font-weight:300;margin-bottom:14px">Live virtual replicas of real-world systems and operations.</p>
+      <p style="font-size:13.5px;line-height:1.75;color:var(--muted);font-weight:300">Simulate processes, test decisions, and predict outcomes before committing them to the real world.</p>
     </div>
-    <div class="fc">
-      <div class="fc-dot" style="background:#fff;opacity:0.3"></div>
-      <div class="fc-title">Open Source AI Tooling</div>
-      <p>Build in public. Contribute to the <strong>AI/ML and local-first tooling</strong> ecosystem — sharing privacy-first, on-device AI patterns developed across DocMe, Job Agent, and GanaIT.<br><br>Interested in contributing to <strong>inference optimization, RAG frameworks,</strong> and developer tools that make powerful AI accessible without cloud dependency.</p>
+    <div style="background:var(--surface);border:1px solid var(--border);padding:32px 36px;opacity:0;animation:up 0.5s 0.24s forwards">
+      <div style="font-family:'Cormorant',serif;font-size:24px;font-weight:500;color:var(--text);margin-bottom:18px">Open-Source Multimodal Models</div>
+      <p style="font-size:13.5px;line-height:1.75;color:var(--muted);font-weight:300;margin-bottom:14px">Open-weight models and pipelines that reason across images, text, and structured records — designed to run on private infrastructure.</p>
+      <p style="font-size:13.5px;line-height:1.75;color:var(--muted);font-weight:300">Same privacy-first stance that shaped my on-prem work, applied to the broader ecosystem.</p>
     </div>
   </div>
 </div>
@@ -572,7 +752,146 @@ h2 { font-size: clamp(28px, 3.5vw, 50px); line-height: 1.1; color: #fff; }
 <style>
 @keyframes pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  50% { opacity: 0.25; }
+}
+
+/* ── Project deep-dive split layout ── */
+.proj {
+  display: flex; gap: 64px; align-items: flex-start;
+  width: 100%; max-width: 980px;
+}
+.proj-left { flex: 0 0 320px; }
+.proj-left .label { margin-bottom: 12px; }
+.proj-problem {
+  font-size: 13px; line-height: 1.85; color: var(--muted); font-weight: 300;
+  border-left: 2px solid var(--gold-line); padding-left: 14px; margin-top: 4px;
+  opacity: 0; animation: up 0.5s 0.3s forwards;
+}
+.proj-stack {
+  margin-top: 24px;
+  opacity: 0; animation: up 0.5s 0.4s forwards;
+}
+.proj-stack-label {
+  font-size: 8px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 10px;
+}
+.proj-right {
+  flex: 1; padding-top: 4px;
+  opacity: 0; animation: up 0.5s 0.15s forwards;
+}
+.proj-arch-label {
+  font-size: 8px; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 18px;
+}
+.vflow { display: flex; flex-direction: column; }
+.vnode {
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.vnode-spine {
+  display: flex; flex-direction: column; align-items: center; flex-shrink: 0;
+}
+.vnode-dot {
+  width: 26px; height: 26px; flex-shrink: 0;
+  border: 1px solid var(--border2); background: var(--surface2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; color: var(--dim); letter-spacing: .04em;
+}
+.vnode-dot.hi {
+  border-color: var(--gold-line); background: var(--gold-dim);
+  color: var(--gold);
+}
+.vnode-line {
+  width: 1px; flex: 1; background: var(--border2); min-height: 20px;
+}
+.vnode-body { padding-bottom: 18px; }
+.vnode-name {
+  font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 3px;
+}
+.vnode-desc {
+  font-size: 11px; color: var(--muted); font-weight: 300; line-height: 1.6;
+}
+
+/* ── Layout utility classes ── */
+.exp-list {
+  display: flex; flex-direction: column; gap: 18px;
+  width: 100%; max-width: 820px;
+}
+.proj-ov-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; width: 100%; max-width: 820px;
+  background: var(--border); border: 1px solid var(--border);
+  overflow: hidden;
+}
+.future-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 24px; width: 100%; max-width: 760px;
+}
+
+/* ── Responsive — Tablet ── */
+@media (max-width: 1024px) {
+  .slide { padding: 64px 64px 84px; }
+  .proj { gap: 40px; }
+  .proj-left { flex: 0 0 268px; }
+}
+
+/* ── Responsive — Mobile ── */
+@media (max-width: 720px) {
+  html, body { overflow: auto; }
+
+  .slide {
+    position: relative;
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    padding: 52px 22px 88px;
+    opacity: 1;
+    pointer-events: all;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow-y: visible;
+  }
+  .slide.active { display: flex; }
+  .deck { position: relative; height: auto; }
+
+  .corner { display: none; }
+
+  h1 { font-size: clamp(40px, 11vw, 60px); }
+  h2 { font-size: clamp(26px, 7vw, 40px); }
+
+  .hero-tagline { font-size: 14px; margin-bottom: 28px; }
+  .chips { gap: 8px; }
+  .chip { padding: 8px 14px; font-size: 10px; }
+
+  .proj { flex-direction: column; gap: 28px; }
+  .proj-left { flex: none; width: 100%; }
+  .proj-right { width: 100%; }
+
+  .proj-ov-grid { grid-template-columns: 1fr; }
+  .future-grid  { grid-template-columns: 1fr; gap: 16px; }
+
+  .exp-list > div {
+    flex-direction: column !important;
+    gap: 4px !important;
+  }
+  .exp-list > div > div:first-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  #counter  { bottom: 18px; right: 18px; }
+  .nav-hint { bottom: 18px; left: 18px; font-size: 8px; }
+  #dots     { bottom: 20px; }
+
+  .pd-body  { grid-template-columns: 1fr; }
+  .fg       { grid-template-columns: 1fr; }
+}
+
+/* ── Responsive — Small mobile ── */
+@media (max-width: 420px) {
+  .slide { padding: 44px 16px 80px; }
+  h1 { font-size: clamp(34px, 10vw, 50px); }
+  h2 { font-size: clamp(22px, 6vw, 32px); }
+  .chips { flex-direction: column; align-items: flex-start; }
 }
 </style>
 
@@ -585,7 +904,6 @@ const progress = document.getElementById('progress');
 const counter = document.getElementById('counter');
 const dotsEl = document.getElementById('dots');
 
-// Build dots
 for (let i = 0; i < total; i++) {
   const d = document.createElement('div');
   d.className = 'dot' + (i === 0 ? ' on' : '');
@@ -604,7 +922,6 @@ function go(n) {
   slides[cur].classList.remove('active');
   cur = n;
 
-  // Re-trigger CSS animations
   const s = slides[cur];
   s.querySelectorAll('.label, h1, h2, .sub, .rule, .hero-tagline, .chips, .bullets, .b, .pg, .pc, .pd-head, .pd-cell, .fg, .fc').forEach(el => {
     el.style.animation = 'none';
@@ -621,13 +938,11 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') go(cur - 1);
 });
 
-// Click left/right halves
 document.addEventListener('click', e => {
   if (e.target.closest('a, .dot')) return;
   e.clientX < window.innerWidth / 2 ? go(cur - 1) : go(cur + 1);
 });
 
-// Touch swipe
 let tx = 0;
 document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
 document.addEventListener('touchend', e => {
